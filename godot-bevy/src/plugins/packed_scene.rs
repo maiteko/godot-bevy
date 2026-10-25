@@ -341,9 +341,7 @@ fn spawn_scene(
                 parent.add_child(&instance);
             }
             None => {
-                scene_tree
-                    .get()
-                    .get_root()
+                crate::utils::scene_root(&scene_tree.get())
                     .with_context(|| {
                         format!(
                             "failed to find scene tree root for scene {:?} on entity {ent}",

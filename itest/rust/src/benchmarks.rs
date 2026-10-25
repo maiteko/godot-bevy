@@ -323,7 +323,7 @@ fn get_scene_tree() -> Gd<SceneTree> {
 /// Returns nodes attached to the scene tree (required for scene tree plugin).
 fn create_scene_tree_nodes(node_count: usize) -> Vec<Gd<Node>> {
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
 
     let mut nodes: Vec<Gd<Node>> = Vec::with_capacity(node_count);
 
@@ -632,7 +632,7 @@ bench_autosync_types!(
 fn run_autosync_node_added(node_count: usize, matching: bool) -> i32 {
     let (mut app, sender) = setup_scene_tree_benchmark_app();
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
 
     let mut nodes: Vec<Gd<Node>> = Vec::with_capacity(node_count);
     for i in 0..node_count {
@@ -703,7 +703,7 @@ const COLLISION_PROCESS_CYCLES: usize = 200;
 
 fn create_collision_body_nodes() -> Vec<Gd<Node>> {
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
 
     let mut nodes: Vec<Gd<Node>> = Vec::with_capacity(COLLISION_BODY_COUNT);
 
@@ -720,7 +720,7 @@ fn create_collision_body_nodes() -> Vec<Gd<Node>> {
 /// Ensures a CollisionWatcher node exists under BevyAppSingleton, mirroring production layout.
 fn ensure_collision_watcher() -> Gd<Node> {
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
 
     if let Some(watcher) = root.try_get_node_as::<Node>("BevyAppSingleton/CollisionWatcher") {
         return watcher;
@@ -768,7 +768,7 @@ fn scene_tree_process_collision_bodies_optimized() -> i32 {
     let nodes = create_collision_body_nodes();
 
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
     let watcher_found = root
         .try_get_node_as::<Node>("BevyAppSingleton/CollisionWatcher")
         .is_some();
@@ -869,7 +869,7 @@ fn setup_collision_processing_benchmark_app()
 
 fn create_collision_processing_nodes(node_count: usize) -> Vec<Gd<Node>> {
     let scene_tree = get_scene_tree();
-    let root = scene_tree.get_root().expect("Root should exist");
+    let root = godot_bevy::utils::scene_root(&scene_tree).expect("Root should exist");
 
     let mut nodes = Vec::with_capacity(node_count + 1);
     for i in 0..=node_count {

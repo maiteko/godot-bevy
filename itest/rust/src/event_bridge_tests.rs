@@ -15,9 +15,7 @@ struct Damage {
 }
 
 fn singleton_node(ctx: &TestContext) -> Gd<BevyApp> {
-    ctx.scene_tree
-        .get_tree()
-        .get_root()
+    godot_bevy::utils::scene_root(&ctx.scene_tree.get_tree())
         .expect("root exists")
         .try_get_node_as::<BevyApp>("BevyAppSingleton")
         .expect("BevyAppSingleton autoload should exist")
@@ -679,9 +677,7 @@ fn test_send_event_reentrant_mapper(ctx: &TestContext) -> godot::task::TaskHandl
 
         // Obtain the BevyApp node's InstanceId before registering mappers so we
         // can capture it (Copy) without capturing the Gd<Node>.
-        let bevy_app_iid = scene_tree
-            .get_tree()
-            .get_root()
+        let bevy_app_iid = godot_bevy::utils::scene_root(&scene_tree.get_tree())
             .expect("root exists")
             .try_get_node_as::<godot::classes::Node>("BevyAppSingleton")
             .expect("BevyAppSingleton exists")

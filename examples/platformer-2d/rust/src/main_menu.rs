@@ -73,7 +73,7 @@ fn reset_menu_assets(mut menu_assets: ResMut<MenuAssets>) {
 }
 
 fn init_menu_assets(mut menu_assets: ResMut<MenuAssets>, mut scene_tree: SceneTreeRef) {
-    if let Some(root) = scene_tree.get().get_root() {
+    if let Some(root) = godot_bevy::utils::scene_root(&scene_tree.get()) {
         match MenuUi::from_node(root) {
             Ok(menu_ui) => {
                 info!("MainMenu: Successfully found menu nodes");

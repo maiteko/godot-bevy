@@ -55,7 +55,7 @@ fn test_audio_looping_preserves_shared_stream(ctx: &TestContext) -> godot::task:
                 }
                 app.update().await;
 
-                let root = ctx.scene_tree.get_tree().get_root().unwrap();
+                let root = godot_bevy::utils::scene_root(&ctx.scene_tree.get_tree()).unwrap();
                 let players: Vec<Gd<Node>> = root
                     .get_children()
                     .iter_shared()

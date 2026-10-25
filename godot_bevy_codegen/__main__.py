@@ -9,9 +9,13 @@ This script:
 4. Generates complete type checking functions
 5. Updates the scene tree plugin to use generated code
 
-Usage: uv run python -m godot_bevy_codegen
+Usage: uv run python -m godot_bevy_codegen [VERSION...]
+
+With versions given (e.g. `4.7`), only those are regenerated; the dispatchers still list
+every supported version.
 """
 
+import sys
 import textwrap
 
 from godot_bevy_codegen.src.file_paths import FilePaths
@@ -74,10 +78,18 @@ def main() -> None:
     # https://github.com/godot-rust/gdext/blob/3f1d543580c1817f1b7fab57a400e82b50085581/godot-bindings/src/import.rs
     # Check the main branch for latest versions: https://github.com/godot-rust/gdext/blob/master/godot-bindings/src/import.rs
     # Note: godot-rust 0.5 removed patch-level API features (e.g. api-4-2-1). Only minor versions are supported.
-    api_versions = ["4.2", "4.3", "4.4", "4.5", "4.6"]
+    api_versions = ["4.2", "4.3", "4.4", "4.5", "4.6", "4.7"]
+
+    # Versions given on the command line are the only ones regenerated (the others' files
+    # are kept as committed); the dispatchers always list every version. Useful when only
+    # the newest Godot is installed.
+    only = sys.argv[1:]
+    unknown = [v for v in only if v not in api_versions]
+    if unknown:
+        raise SystemExit(f"Unknown API versions {unknown}; known: {api_versions}")
 
     try:
-        for api_version in api_versions:
+        for api_version in only or api_versions:
             indent_log(f"⚙️  Processing API version {api_version}...")
             generate_for_version(api_version)
 
@@ -92,7 +104,13 @@ def main() -> None:
         )
 
         rust_files = [
-            f for f in FilePaths.all_generated_files(api_versions) if f.suffix == ".rs"
+            f
+            for f in FilePaths.all_generated_files(only or api_versions)
+            if f.suffix == ".rs"
+        ] + [
+            FilePaths.type_checking_dispatcher_file,
+            FilePaths.node_markers_dispatcher_file,
+            FilePaths.signal_names_dispatcher_file,
         ]
         run_cargo_fmt(rust_files, FilePaths.project_root)
 
@@ -100,7 +118,7 @@ def main() -> None:
         indent_log("🎉 Generation complete!")
         indent_log("")
         indent_log("    Files generated:")
-        for path in FilePaths.all_generated_files(api_versions):
+        for path in FilePaths.all_generated_files(only or api_versions):
             indent_log(f"       • {path.relative_to(FilePaths.project_root)}")
         indent_log(
             textwrap.dedent(

@@ -68,7 +68,8 @@ fn init_menu_assets(
     mut scene_tree: SceneTreeRef,
     mut godot: GodotAccess,
 ) {
-    let menu_ui = MenuUi::from_node(scene_tree.get().get_root().unwrap()).unwrap();
+    let menu_ui =
+        MenuUi::from_node(godot_bevy::utils::scene_root(&scene_tree.get()).unwrap()).unwrap();
 
     menu_assets.message_label = Some(menu_ui.message_label);
     menu_assets.start_button = Some(menu_ui.start_button);

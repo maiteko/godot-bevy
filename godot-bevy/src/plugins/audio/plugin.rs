@@ -378,7 +378,7 @@ fn process_play_command(
     };
 
     if let Some(handle) = player_handle {
-        if let Some(mut root) = scene_tree.get().get_root() {
+        if let Some(mut root) = crate::utils::scene_root(&scene_tree.get()) {
             let node = godot.get::<godot::classes::Node>(handle);
             root.add_child(&node);
         }

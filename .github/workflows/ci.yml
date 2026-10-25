@@ -128,7 +128,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [api-4-2, api-4-3, api-4-4, api-4-5, api-4-6]
+        api: [api-4-2, api-4-3, api-4-4, api-4-5, api-4-6, api-4-7]
         feature-flags: ["", "--no-default-features"]
     steps:
       - name: Checkout code

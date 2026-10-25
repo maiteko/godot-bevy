@@ -228,7 +228,7 @@ fn start(adapters: Vec<CaptureAdapter>) -> Result<(), String> {
     engine.set_time_scale(1.0);
     let mut tree = tree();
     tree.call("set_physics_interpolation_enabled", &[false.to_variant()]);
-    let mut root = tree.get_root().ok_or("missing root viewport")?;
+    let mut root = godot_bevy::utils::scene_root(&tree).ok_or("missing root viewport")?;
     let size = Vector2i::new(manifest.viewport[0] as i32, manifest.viewport[1] as i32);
     root.set_size(size);
     root.set_content_scale_size(size);
@@ -675,7 +675,7 @@ impl CaptureState {
         if !drawn.get() {
             return Err("force_draw did not complete frame_post_draw".into());
         }
-        let root = tree().get_root().ok_or("missing root viewport")?;
+        let root = godot_bevy::utils::scene_root(&tree()).ok_or("missing root viewport")?;
         let image = root
             .get_texture()
             .and_then(|texture| texture.get_image())

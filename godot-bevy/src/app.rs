@@ -142,12 +142,11 @@ impl BevyApp {
     /// Resolves the `/root/BevyAppSingleton` autoload — `None` in the editor or
     /// before the autoload exists.
     pub fn try_singleton() -> Option<Gd<BevyApp>> {
-        godot::classes::Engine::singleton()
+        let tree = godot::classes::Engine::singleton()
             .get_main_loop()?
             .try_cast::<godot::classes::SceneTree>()
-            .ok()?
-            .get_root()?
-            .try_get_node_as::<BevyApp>("BevyAppSingleton")
+            .ok()?;
+        crate::utils::scene_root(&tree)?.try_get_node_as::<BevyApp>("BevyAppSingleton")
     }
 
     /// Enqueue a typed event into this app's ECS, delivered to `On<T>` observers

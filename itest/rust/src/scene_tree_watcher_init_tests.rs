@@ -5,7 +5,7 @@ fn find_bevy_app_node(
     scene_tree_node: &Gd<godot::classes::Node>,
 ) -> Option<Gd<godot::classes::Node>> {
     let tree = scene_tree_node.get_tree();
-    let root = tree.get_root()?;
+    let root = godot_bevy::utils::scene_root(&tree)?;
     root.try_get_node_as::<godot::classes::Node>("BevyAppSingleton")
 }
 

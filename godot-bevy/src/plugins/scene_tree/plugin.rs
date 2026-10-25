@@ -286,7 +286,7 @@ fn initialize_scene_tree(
     message_reader: Res<SceneTreeMessageReader>,
     mut godot: GodotAccess,
 ) {
-    let root = scene_tree.get().get_root().unwrap();
+    let root = crate::utils::scene_root(&scene_tree.get()).unwrap();
 
     let optimized_watcher = get_bevy_app_child("OptimizedSceneTreeWatcher");
 
@@ -488,7 +488,7 @@ fn get_bevy_app_child(child_name: &str) -> Option<Gd<Node>> {
     let scene_tree = Engine::singleton()
         .get_main_loop()
         .and_then(|ml| ml.try_cast::<SceneTree>().ok())?;
-    let root = scene_tree.get_root()?;
+    let root = crate::utils::scene_root(&scene_tree)?;
     find_node_by_name(&root.upcast(), &StringName::from(child_name))
 }
 
@@ -639,7 +639,7 @@ fn create_scene_tree_entity(
 ) {
     // Resolve entities via the complete NodeEntityIndex (in-loop inserts below
     // plus the GodotNodeHandle hooks), avoiding an O(world) scan per batch.
-    let scene_root = scene_tree.get().get_root().unwrap();
+    let scene_root = crate::utils::scene_root(&scene_tree.get()).unwrap();
 
     // CollisionWatcher is optional - only required if GodotCollisionsPlugin is added
     let collision_watcher = get_bevy_app_child("CollisionWatcher");

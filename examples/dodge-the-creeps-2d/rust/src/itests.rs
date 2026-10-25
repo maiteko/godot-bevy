@@ -10,7 +10,7 @@ async fn menu_score_setting_reaches_observer(ctx: TestContext) {
     let mut main = load::<PackedScene>("res://scenes/main.tscn")
         .instantiate()
         .unwrap();
-    let mut root = ctx.scene_tree.get_tree().get_root().unwrap();
+    let mut root = godot_bevy::utils::scene_root(&ctx.scene_tree.get_tree()).unwrap();
     root.add_child(&main);
 
     let mut app = TestApp::new(&ctx, |app| {
